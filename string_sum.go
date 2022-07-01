@@ -1,7 +1,12 @@
-package string_sum
+//package string_sum
+package main
 
 import (
 	"errors"
+	"fmt"
+	"strconv"
+	"strings"
+	"unicode"
 )
 
 //use these errors as appropriate, wrapping them with fmt.Errorf function
@@ -23,5 +28,54 @@ var (
 // Use the errors defined above as described, again wrapping into fmt.Errorf
 
 func StringSum(input string) (output string, err error) {
-	return "", nil
+	input = strings.TrimSpace(input)
+	//inputBytes := []byte(input)
+
+	arrNumbersStr := strings.FieldsFunc(input, func(c rune) bool { return c == '+' || c == '-' })
+	arrOperationsStr := strings.FieldsFunc(input, func(c rune) bool { return unicode.IsNumber(c) })
+
+	if len(arrNumbersStr) == 0 {
+		return "", fmt.Errorf("%w", errorEmptyInput)
+	}
+	if len(arrNumbersStr) != 2 {
+		return "", fmt.Errorf("%w", errorNotTwoOperands)
+	}
+	number1, err := strconv.Atoi(strings.TrimSpace(arrNumbersStr[0]))
+	if err != nil {
+		return "", fmt.Errorf("%w", err)
+	}
+
+	number2, err := strconv.Atoi(strings.TrimSpace(arrNumbersStr[1]))
+	if err != nil {
+		return "", fmt.Errorf("%w", err)
+	}
+
+	if len(arrOperationsStr) > 2 {
+		panic("More than 2 operations") // not covered by tests
+	}
+	op2str := strings.TrimSpace(arrOperationsStr[len(arrOperationsStr)-1])
+	if op2str == "-" {
+		number2 = -number2
+	} else if op2str != "+" {
+		panic("Unknown operation") // not covered by tests
+	}
+	if len(arrOperationsStr) == 2 {
+		op1str := strings.TrimSpace(arrOperationsStr[0])
+		if op1str == "-" {
+			number1 = -number1
+		} else if op2str != "+" {
+			panic("Unknown operation") // not covered by tests
+		}
+	}
+
+	return strconv.Itoa(number1 + number2), nil
+}
+
+func main() {
+	out, err := StringSum(" -2 +88  ")
+	if err != nil {
+		fmt.Printf("We got error: %v", err)
+	} else {
+		fmt.Print(out)
+	}
 }
