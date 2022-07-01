@@ -1,5 +1,4 @@
-//package string_sum
-package main
+package string_sum
 
 import (
 	"errors"
@@ -69,13 +68,4 @@ func StringSum(input string) (output string, err error) {
 	}
 
 	return strconv.Itoa(number1 + number2), nil
-}
-
-func main() {
-	out, err := StringSum(" -2 +88  ")
-	if err != nil {
-		fmt.Printf("We got error: %v", err)
-	} else {
-		fmt.Print(out)
-	}
 }
